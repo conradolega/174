@@ -7,6 +7,8 @@
 
 typedef struct {
 	int rank;
+	int *left_fork;
+	int *right_fork;
 	sem_t *sem;
 } philo_t;
 
@@ -22,6 +24,7 @@ void *philosopher(void *philo_data) {
 
 int main() {
 	int i = 0;
+	int forks[NUM_THREADS] = {0, 0, 0, 0, 0};
 	pthread_t philosophers[NUM_THREADS];
 	philo_t *philo_data[NUM_THREADS];
 	sem_t sem;
@@ -31,6 +34,9 @@ int main() {
 		philo_data[i] = (philo_t *) malloc(sizeof(philo_t));
 		philo_data[i]->rank = i;
 		philo_data[i]->sem = &sem;
+		if (i - 1 < 0) philo_data[i]->left_fork = &forks[NUM_THREADS - 1];
+		else philo_data[i]->left_fork = &forks[i - 1];
+		philo_data[i]->right_fork = &forks[i];
 		pthread_create(&philosophers[i], NULL, philosopher, (void *) philo_data[i]);
 	}
 
