@@ -9,9 +9,18 @@ typedef struct {
 	sem_t *right_fork;
 } philo_t;
 
+void *starve_timer(void* data) {
+	int *rank = (int *) data;
+	usleep(5000000);
+	printf("Philosopher %d has starved!\n", *rank);
+	exit(0);
+}
+
 void *philosopher(void *philo_data) {
 	philo_t *data = (philo_t *) philo_data;
+	pthread_t starve_thread;
 	while (1) {
+		pthread_create(&starve_thread, NULL, starve_timer, (void *) &data->rank);
 		if (data->rank == 0) {
 			sem_wait(data->left_fork);
 			sem_wait(data->right_fork);
