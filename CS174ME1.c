@@ -12,10 +12,18 @@ typedef struct {
 void *philosopher(void *philo_data) {
 	philo_t *data = (philo_t *) philo_data;
 	while (1) {
-		sem_wait(data->left_fork);
-		sem_wait(data->right_fork);
-		sem_post(data->left_fork);
-		sem_post(data->right_fork);
+		if (data->rank == 0) {
+			sem_wait(data->left_fork);
+			sem_wait(data->right_fork);
+			sem_post(data->left_fork);
+			sem_post(data->right_fork);
+		}
+		else {
+			sem_wait(data->right_fork);
+			sem_wait(data->left_fork);
+			sem_post(data->right_fork);
+			sem_post(data->left_fork);
+		}
 	}
 	pthread_exit(NULL);
 }
