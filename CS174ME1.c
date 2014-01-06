@@ -15,12 +15,14 @@ void *philosopher(void *philo_data) {
 		if (data->rank == 0) {
 			sem_wait(data->left_fork);
 			sem_wait(data->right_fork);
+			usleep(2000000);
 			sem_post(data->left_fork);
 			sem_post(data->right_fork);
 		}
 		else {
 			sem_wait(data->right_fork);
 			sem_wait(data->left_fork);
+			usleep(2000000);
 			sem_post(data->right_fork);
 			sem_post(data->left_fork);
 		}
