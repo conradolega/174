@@ -3,8 +3,6 @@
 #include <pthread.h>
 #include <semaphore.h>
 
-#define NUM_THREADS 5
-
 typedef struct {
 	int rank;
 	sem_t *left_fork;
@@ -22,8 +20,9 @@ void *philosopher(void *philo_data) {
 	pthread_exit(NULL);
 }
 
-int main() {
+int main(int argc, char* argv[]) {
 	int i = 0;
+	int NUM_THREADS = atoi(argv[1]);
 	sem_t forks[NUM_THREADS];
 	pthread_t philosophers[NUM_THREADS];
 	philo_t *philo_data[NUM_THREADS];
