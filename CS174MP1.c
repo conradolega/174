@@ -3,11 +3,18 @@
 #include <pthread.h>
 #include <semaphore.h>
 
+int NUM_THREADS;
+
 typedef struct {
 	sem_t *mutex;
 	sem_t *sem;
 	int counter;
 } barrier_t;
+
+typedef struct {
+	barrier_t *barrier;
+	int rank;
+} data_t;
 
 void barrier_init(barrier_t *barrier, int threads) {
 	barrier->mutex = (sem_t *) malloc(sizeof(sem_t));
@@ -41,5 +48,19 @@ void *thread(void *d) {
 }
 
 int main(int argc, char* argv[]) {
+	NUM_THREADS = atoi(argv[1]);
+	int i;
+	barrier_t barrier;
+	barrier_init(&barrier, NUM_THREADS);
 
+	pthread_t threads[NUM_THREADS];
+	data_t data[NUM_THREADS];
+
+	for (i = 0; i < NUM_THREADS; i++) {
+		data[i].barrier = &barrier;
+		data[i].rank = i;
+		pthread_create(&threads[i], NULL, thread, (void *) &data[i]);
+	}
+
+	pthread_exit(NULL);
 }
