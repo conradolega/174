@@ -31,6 +31,15 @@ void barrier_wait(barrier_t *barrier) {
 	sem_wait(barrier->sem);
 }
 
+void *thread(void *d) {
+	data_t *data = (data_t *) d;
+	int rank = data->rank;
+	printf("Thread %d waiting...\n", rank);
+	barrier_wait(data->barrier);
+	printf("Thread %d exiting...\n", rank);
+	pthread_exit(NULL);
+}
+
 int main(int argc, char* argv[]) {
 
 }
