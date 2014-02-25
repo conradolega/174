@@ -17,6 +17,20 @@ void barrier_init(barrier_t *barrier, int threads) {
 	barrier->counter = 0;
 }
 
+void barrier_wait(barrier_t *barrier) {
+	sem_wait(barrier->mutex);
+	barrier->counter++;
+	if (barrier->counter == NUM_THREADS) {
+		printf("Last thread to enter the barrier\n");
+		int i;
+		for (i = 0; i < NUM_THREADS; i++) {
+			sem_post(barrier->sem);
+		}
+	}
+	sem_post(barrier->mutex);
+	sem_wait(barrier->sem);
+}
+
 int main(int argc, char* argv[]) {
 
 }
